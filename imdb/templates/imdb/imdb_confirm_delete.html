@@ -1,0 +1,18 @@
+{% extends 'imdb/base.html' %}
+
+
+{% block content %}
+<title>Очистить IMDB</title>
+<div class="center">
+	<form action="{% url 'imdb:delete_all' %}" method="post">
+		{% csrf_token %}
+		<h2>Удаление записей</h2>
+		<p>Вы уверены, что хотите удалить <b><font color="red">ВСЕ</font></b> записи из базы IMDB?</p>
+		<br>
+		<p class="form-buttons">
+			<input type="submit" class="btn btn-primary" value="Удалить">
+			<input type="button" class="btn btn-success" value="Отмена" onclick="window.location.href = '{% url 'imdb:home' %}'">
+		</p>
+	</form>
+</div>
+{% endblock %}

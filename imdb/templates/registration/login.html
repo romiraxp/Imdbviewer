@@ -1,0 +1,40 @@
+{% extends 'imdb/base.html' %}
+{% block content %}
+<div class="center">
+  {% if form.errors %}
+    <p><font color ="red">Ваш логин и/или пароль не совпадают. Пожалуйста, повторите попытку</font></p>
+  {% endif %}
+  <br>
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>Ваша учетная запись не имеет доступа к этой странице. Для продолжения укажите логи и пароль, которые имеют доступ.</p>
+    {% else %}
+      <p>Введите логин для просмотра страницы.</p><br>
+
+    {% endif %}
+  {% endif %}
+
+  <div class ="login__fields">
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <table class>
+
+      <tr>
+      <!--  <td>{{ form.username.label_tag }}</td>-->
+        <td>Логин</td>
+        <td>{{ form.username }}</td>
+      </tr>
+
+      <tr>
+      <!--  <td>{{ form.password.label_tag }}</td>-->
+        <td>Пароль</td>
+        <td>{{ form.password }}</td>
+      </tr>
+      </table>
+
+      <input type="submit" class="btn btn-success" value="Войти" />
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+  </div>
+</div>
+{% endblock %}

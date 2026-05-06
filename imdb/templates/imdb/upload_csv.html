@@ -1,0 +1,17 @@
+{% extends 'imdb/base.html' %}
+
+{% block content %}
+<title>Загрузить IMDB</title>
+<div class="center">
+    <h2>Загрузить базу из файла CSV</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br>
+		<p class="form-buttons">
+			<input type="submit" class="btn btn-success" value="Загрузить">
+            <input type="button" class="btn btn-primary" value="Отмена" onclick="window.location.href = '{% url 'imdb:home' %}'">
+        </p>
+    </form>
+</div>
+{% endblock %}
