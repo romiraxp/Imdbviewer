@@ -10,13 +10,12 @@
           <img src="{% static 'media\imdb_logo_100.png' %}" alt="">
         </div>
           <h3 class="header__title">
-            <span>Здравствуйте, <font color= #6251fc>{{ user.username }} </font></span>
+            <span>Здравствуйте, <font color= #6251fc>{{ user.get_full_name }} </font></span>
           </h3>
       </div>
       <div class="header__title-contact">
         <div class="nav">
           <ul>
-            <!-- <li><a href="#">Контакт</a></li> -->
             <li>
               {% if user.is_authenticated %}
               <form action="{% url 'logout' %}?next={{request.path}}" method="post">
@@ -41,7 +40,8 @@
       </h1>
       <ul>
         <li>{{ title }}: {{ imdb_records_cnt }}</li>
-        <li>Дата публикации:</strong> {{ public_date }}</li>
+        <li>Дата публикации: {{ public_date }}</li>
+        <li>Версия: 1.0</li>
       </ul>
       <span class = "empty__filters"> {{ message }} </span>
     </div>
@@ -51,70 +51,45 @@
 <hr>
 
 <section class = "panel_search">
-<!-- <div class = "panel_search"> -->
 <form method="POST">
     {% csrf_token %}
     <div class = "search_attr">
       <div class="select-wrapper">
         <label for="product">ID продукта</label>
         <input class="search_field" list="products" name="product" id="product" style = "width:100px" placeholder="Search...">
-        <datalist id="products"> 
-<!--          {% for item in imdb_list %}-->
-<!--          <option>{{ item.product_id }}</option>-->
-<!--          {% endfor %}-->
-        </datalist>
+        <datalist id="products"></datalist>
       </div>
       <br>
       <div class="select-wrapper">
         <label for="ean">Штрих- код продукта</label>
         <input class="search_field" list="codes" name="barcode" id="ean" style = "width:150px" placeholder="Search...">
-        <datalist id="codes">
-<!--          {% for item in imdb_list %}-->
-<!--          <option>{{ item.code }}</option>-->
-<!--          {% endfor %}-->
-        </datalist>
+        <datalist id="codes"></datalist>
       </div>
       <br>
       <div class="select-wrapper">
       <label for="descr">Описание продукта</label>
         <input class="search_field" list="descrs" name="description" id="descr" style = "width:250px" placeholder="Search...">
-        <datalist id="descrs">
-<!--          {% for item in imdb_list %}-->
-<!--          <option>{{ item.description }}</option>-->
-<!--          {% endfor %}-->
-        </datalist>
+        <datalist id="descrs"></datalist>
       </div>
       <br>
 
       <div class="select-wrapper">
       <label for="ctgr">Категория</label>
         <input class="search_field" list="categories" name="category" id="ctgr" style = "width:250px" placeholder="Search...">
-        <datalist id="categories">
-<!--          {% for ctgr in cat_list %}-->
-<!--          <option>{{ ctgr.category }}</option>-->
-<!--          {% endfor %}-->
-        </datalist>
+        <datalist id="categories"></datalist>
       </div>
       <br>
 
       <div class="select-wrapper">
         <label for="brnd">Бренд</label>
           <input class="search_field" list="brands" name="brand" id="brnd" style = "width:250px" placeholder="Search...">
-          <datalist id="brands">
-<!--            {% for brand in brand_list %}-->
-<!--            <option>{{ brand.brand }}</option>-->
-<!--            {% endfor %}-->
-          </datalist>
+          <datalist id="brands"></datalist>
         </div>
       <br>
       <div class="select-wrapper">
         <label for="mnfr">Производитель</label>
           <input class="search_field" list="manufacturers" name="manufacturer" id="mnfr" style = "width:250px" placeholder="Search...">
-          <datalist id="manufacturers">
-<!--            {% for mnf in mnf_list %}-->
-<!--            <option>{{ mnf.manufacturer }}</option>-->
-<!--            {% endfor %}-->
-          </datalist>
+          <datalist id="manufacturers"></datalist>
       </div>
       <div class="select-wrapper">
         <label for="sts">Статус продукта</label>
@@ -126,7 +101,7 @@
         </div>
 
       <div class="select-wrapper">
-        <!-- <label></label> --><br>
+        <br>
         <input type="submit" class="btn btn-success" value="Поиск"/>
       </div>
     </div>
@@ -161,13 +136,8 @@
 </section>
 </div>
 
-<!-- <script src="{% static "js/bootstrap.bundle.js" %}"></script> -->
 {% endblock %}
     {% block legal %}
-    <!-- <div class="tn-atom">
-        Базы данных Нильсен разрабатываются и формируются с учетом потребностей и задач каждого отдельного клиента, поэтому их стоимость определяется индивидуально исходя из целого ряда параметров и является коммерческой тайной Нильсен. Конкретный размер лицензионного вознаграждения за предоставляемые базы данных Нильсен определяет с клиентом в соответствующем лицензионном соглашении.<br>
-        Исключительные права на базы данных Нильсен принадлежат ООО «Эй си Нильсен» и ООО «Нильсен Дэйта Фэктори» и предоставляются посредством лицензирования. Приобретение данных Нильсен у любых третьих лиц, а также их дальнейшее использование является неправомерным и преследуется по закону.
-    </div> -->
         <div class="footer__legal_one">
           <p>Базы данных Нильсен разрабатываются и формируются с учетом потребностей и задач каждого отдельного клиента, поэтому их стоимость определяется индивидуально исходя из целого ряда параметров и является коммерческой тайной Нильсен. Конкретный размер лицензионного вознаграждения за предоставляемые базы данных Нильсен определяет с клиентом в соответствующем лицензионном соглашении.</p>
         </div>
