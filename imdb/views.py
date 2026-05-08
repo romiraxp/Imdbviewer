@@ -8,7 +8,23 @@ from django.views.generic.edit import DeleteView
 from .forms import UploadCSVForm
 from django.contrib import messages
 
+
+# from django.http import HttpResponseRedirect
+# from django.shortcuts import render
+# from .forms import UploadFileForm
+
+# def upload_file(request):
+#     if request.method == "POST":
+#         form = UploadFileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             handle_uploaded_file(request.FILES["file"])
+#             return HttpResponseRedirect("/success/url/")
+#     else:
+#         form = UploadFileForm()
+#     return render(request, "upload.html", {"form": form})
+
 def upload_csv(request):
+
     if request.method == 'POST':
         form = UploadCSVForm(request.POST, request.FILES)
         if form.is_valid():
@@ -16,27 +32,58 @@ def upload_csv(request):
             if not csv_file.name.endswith('.csv'):
                 messages.error(request, 'Это не CSV-файл')
                 return redirect('imdb:upload_csv')
-
+            # COPY users FROM csv_file WITH(FORMAT CSV, HEADER true, DELIMITER ',', ENCODING 'UTF8', NULL 'NA');
             # Декодируем файл и читаем его с помощью csv.reader
+            # handle_uploaded_file(csv_file)
+
             file_data = csv_file.read().decode('utf-8').splitlines()
+            # file_data = csv_file.read(chunksize=chunksize)
+            # for chunk in csv_file.chunks():
+            #     print(chunk)
             objs = []
             csv_data = csv.DictReader(file_data)
+            cnt=0
+            # for row_item in csv_data:
+            #     cnt += 1
+            # print(cnt)
+            chunksize = 10000
+
+            # print("--1",len(objs))
             for row in csv_data:
-                objs.append(Imdb(
-                    product_id=row['product_id'],
-                    code=row['code'],
-                    description=row['description'],
-                    category=row['category'],
-                    brand=row['brand'],
-                    manufacturer=row['manufacturer'],
-                    status=row['status']
-                ))
+                if len(objs) <= chunksize:
+                    objs.append(Imdb(
+                        product_id=row['product_id'],
+                        code=row['code'],
+                        description=row['description'],
+                        category=row['category'],
+                        brand=row['brand'],
+                        manufacturer=row['manufacturer'],
+                        status=row['status']
+                    ))
+                else:
+                    objs.append(Imdb(
+                        product_id=row['product_id'],
+                        code=row['code'],
+                        description=row['description'],
+                        category=row['category'],
+                        brand=row['brand'],
+                        manufacturer=row['manufacturer'],
+                        status=row['status']
+                    ))
+                    Imdb.objects.bulk_create(objs)
+                    objs = []
             Imdb.objects.bulk_create(objs)
             messages.success(request, 'CSV файл загружен и обработан.')
             return redirect('imdb:upload_csv')
     else:
         form = UploadCSVForm()
     return render(request, 'imdb/upload_csv.html', {'form': form})
+
+# def handle_uploaded_file(f):
+#     with open("some/file/name.txt", "wb+") as destination:
+#         for chunk in f.chunks():
+#             destination.write(chunk)
+
 
 def delete_confirm(request):
     return render(request, 'imdb/imdb_confirm_delete.html')
